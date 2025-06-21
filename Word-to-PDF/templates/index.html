@@ -3,16 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word to PDF Converter</title>
+    <title>Word ↔ PDF Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-        h2 { text-align: center; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="file"] { width: 100%; }
-        select, button { width: 100%; padding: 8px; }
-        .alert { color: red; text-align: center; }
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 18px;
+            padding: 32px 28px 28px 28px;
+            position: relative;
+        }
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.1rem;
+            color: #2d3a4b;
+            text-align: center;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #3a3a3a;
+            font-weight: 500;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid #bfc9d1;
+            border-radius: 6px;
+            background: #f7fafd;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid #bfc9d1;
+            border-radius: 6px;
+            background: #f7fafd;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 88, 88, 0.08);
+            transition: background 0.2s, transform 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .alert {
+            color: #fff;
+            background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+            padding: 10px 0;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .download-btn {
+            background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 88, 88, 0.08);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .download-btn:hover {
+            background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            color: #888;
+            font-size: 0.98rem;
+        }
+        .icon {
+            display: block;
+            margin: 0 auto 18px auto;
+            width: 54px;
+            height: 54px;
+        }
     </style>
     <script>
     function updateDropdown() {
@@ -41,7 +138,12 @@
 </head>
 <body>
     <div class="container">
-        <h2>Word to PDF & More</h2>
+        <svg class="icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="48" height="48" rx="10" fill="#f09819" fill-opacity="0.15"/>
+            <path d="M20 24H44M20 32H44M20 40H36" stroke="#ff5858" stroke-width="3" stroke-linecap="round"/>
+            <rect x="16" y="16" width="32" height="32" rx="6" stroke="#f09819" stroke-width="2"/>
+        </svg>
+        <h2>Word ↔ PDF Converter</h2>
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <div class="alert">{{ messages[0] }}</div>
@@ -62,14 +164,17 @@
         </form>
         {% if show_download %}
         <form method="get" action="/download">
-            <button type="submit" style="background-color: red; color: white; width: 100%; padding: 10px; margin-top: 20px; font-size: 16px; border: none; border-radius: 4px;">Download</button>
+            <button type="submit" class="download-btn">Download PDF</button>
         </form>
         {% endif %}
         {% if show_docx_download %}
         <form method="get" action="/download-docx">
-            <button type="submit" style="background-color: red; color: white; width: 100%; padding: 10px; margin-top: 20px; font-size: 16px; border: none; border-radius: 4px;">Download DOCX</button>
+            <button type="submit" class="download-btn">Download DOCX</button>
         </form>
         {% endif %}
+    </div>
+    <div class="footer">
+        <span>Made with <span style="color:#ff5858">&#10084;</span> | Secure, fast, and free</span>
     </div>
 </body>
 </html>
