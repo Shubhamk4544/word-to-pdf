@@ -4,6 +4,9 @@ import uuid
 import subprocess
 from io import BytesIO
 from pdf2docx import Converter
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from docx import Document
 
 ALLOWED_EXTENSIONS = {'docx', 'pdf'}
 
@@ -35,19 +38,27 @@ def index():
                 with open(temp_input_path, 'wb') as f:
                     f.write(temp_upload.read())
                 temp_upload.seek(0)
-                libreoffice_cmd = [
-                    'libreoffice', '--headless', '--convert-to', 'pdf:writer_pdf_Export', '--outdir', '/tmp', temp_input_path
-                ]
-                result = subprocess.run(libreoffice_cmd, capture_output=True)
-                if result.returncode != 0:
+                try:
+                    doc = Document(temp_input_path)
+                    temp_output_path = f'/tmp/{file_id}_converted.pdf'
+                    c = canvas.Canvas(temp_output_path, pagesize=letter)
+                    width, height = letter
+                    y = height - 40
+                    for para in doc.paragraphs:
+                        text = para.text
+                        if y < 40:
+                            c.showPage()
+                            y = height - 40
+                        c.drawString(40, y, text)
+                        y -= 20
+                    c.save()
                     os.remove(temp_input_path)
-                    raise Exception(f'LibreOffice error: {result.stderr.decode()}')
-                base_name = os.path.splitext(os.path.basename(temp_input_path))[0]
-                temp_output_path = f'/tmp/{base_name}.pdf'
-                os.remove(temp_input_path)
-                session['pdf_path'] = temp_output_path
-                session['pdf_name'] = base_name + '.pdf'
-                return render_template('index.html', show_download=True, show_docx_download=False)
+                    session['pdf_path'] = temp_output_path
+                    session['pdf_name'] = file_id + '_converted.pdf'
+                    return render_template('index.html', show_download=True, show_docx_download=False)
+                except Exception as e:
+                    flash(f'DOCX to PDF conversion error: {e}')
+                    return redirect(request.url)
             elif ext == 'pdf' and output_format == 'docx':
                 temp_input_path = f'/tmp/{file_id}_{filename}'
                 with open(temp_input_path, 'wb') as f:
